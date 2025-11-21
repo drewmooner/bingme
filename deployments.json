@@ -1,0 +1,10 @@
+{
+  "network": "https://dream-rpc.somnia.network",
+  "deployer": "0x042943aefD5BFE42936b9fB575f5E1eeddFF1666",
+  "timestamp": "2025-11-20T21:58:52.734Z",
+  "deployments": {
+    "WSOMI": "0xb8DabbA9EAa4957Dce08e31Ad729F89C1F7C88b4",
+    "Drew": "0x92ef9494FABC919392F22561d28BC216A1fACE74",
+    "Ceejhay": "0xf12Ce9E09071D0506a114bf29D4A8088174a812B"
+  }
+}

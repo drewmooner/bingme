@@ -1,0 +1,779 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "C:\\Users\\PRINCEWILL\\bingme\\contracts\\Ceejhay.sol": {
+      "lastModificationDate": 1763674517553,
+      "contentHash": "5332e53ef039213c3fa7160b42292e91",
+      "sourceName": "contracts/Ceejhay.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Ceejhay"
+      ]
+    },
+    "C:\\Users\\PRINCEWILL\\bingme\\contracts\\core\\interfaces\\ISomniaExchangeFactory.sol": {
+      "lastModificationDate": 1763678055220,
+      "contentHash": "6240cf72d6c53c27ed28ca4a01d2f846",
+      "sourceName": "contracts/core/interfaces/ISomniaExchangeFactory.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.5.0"
+      ],
+      "artifacts": [
+        "ISomniaExchangeFactory"
+      ]
+    },
+    "C:\\Users\\PRINCEWILL\\bingme\\contracts\\interfaces\\IWETH.sol": {
+      "lastModificationDate": 1763678055655,
+      "contentHash": "0dce230b43bea1de1988f6135aee3b36",
+      "sourceName": "contracts/interfaces/IWETH.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.5.0"
+      ],
+      "artifacts": [
+        "IWETH"
+      ]
+    },
+    "C:\\Users\\PRINCEWILL\\bingme\\contracts\\interfaces\\IERC20.sol": {
+      "lastModificationDate": 1763678055635,
+      "contentHash": "7b3db991c0fb43d489e7a2a411537dbe",
+      "sourceName": "contracts/interfaces/IERC20.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.5.0"
+      ],
+      "artifacts": [
+        "IERC20"
+      ]
+    },
+    "C:\\Users\\PRINCEWILL\\bingme\\contracts\\interfaces\\ISomniaExchangeFactory.sol": {
+      "lastModificationDate": 1763678055220,
+      "contentHash": "6240cf72d6c53c27ed28ca4a01d2f846",
+      "sourceName": "contracts/interfaces/ISomniaExchangeFactory.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.5.0"
+      ],
+      "artifacts": [
+        "ISomniaExchangeFactory"
+      ]
+    },
+    "C:\\Users\\PRINCEWILL\\bingme\\contracts\\interfaces\\ISomniaExchangeCallee.sol": {
+      "lastModificationDate": 1763678055654,
+      "contentHash": "362f20d012d68a53fc6c0a7a1d5d489a",
+      "sourceName": "contracts/interfaces/ISomniaExchangeCallee.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.5.0"
+      ],
+      "artifacts": [
+        "ISomniaExchangeCallee"
+      ]
+    },
+    "C:\\Users\\PRINCEWILL\\bingme\\contracts\\interfaces\\ISomniaExchangeERC20.sol": {
+      "lastModificationDate": 1763678055655,
+      "contentHash": "0a8ae5579c6c1cf3335b137ff36e99ee",
+      "sourceName": "contracts/interfaces/ISomniaExchangeERC20.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.5.0"
+      ],
+      "artifacts": [
+        "ISomniaExchangeERC20"
+      ]
+    },
+    "C:\\Users\\PRINCEWILL\\bingme\\contracts\\interfaces\\ISomniaExchangePair.sol": {
+      "lastModificationDate": 1763678055221,
+      "contentHash": "6756c6edcbf2d30b702c7d7f6b92bceb",
+      "sourceName": "contracts/interfaces/ISomniaExchangePair.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.5.0"
+      ],
+      "artifacts": [
+        "ISomniaExchangePair"
+      ]
+    },
+    "C:\\Users\\PRINCEWILL\\bingme\\contracts\\interfaces\\ISomniaExchangeRouter02.sol": {
+      "lastModificationDate": 1763678055655,
+      "contentHash": "25b852ec4c21b7129bae5c141465322f",
+      "sourceName": "contracts/interfaces/ISomniaExchangeRouter02.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.6.2"
+      ],
+      "artifacts": [
+        "ISomniaExchangeRouter01",
+        "ISomniaExchangeRouter02"
+      ]
+    },
+    "C:\\Users\\PRINCEWILL\\bingme\\contracts\\libraries\\TransferHelper.sol": {
+      "lastModificationDate": 1763678055656,
+      "contentHash": "a8fc1a2ed9989b96680841323f381aa0",
+      "sourceName": "contracts/libraries/TransferHelper.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.6.0"
+      ],
+      "artifacts": [
+        "TransferHelper"
+      ]
+    },
+    "C:\\Users\\PRINCEWILL\\bingme\\contracts\\Drew.sol": {
+      "lastModificationDate": 1763674517553,
+      "contentHash": "57b089da0923394e05cba886214b6a51",
+      "sourceName": "contracts/Drew.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Drew"
+      ]
+    },
+    "C:\\Users\\PRINCEWILL\\bingme\\contracts\\WSOMI.sol": {
+      "lastModificationDate": 1763674517553,
+      "contentHash": "5172a6e544f968b78199effea9e5d260",
+      "sourceName": "contracts/WSOMI.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "WSOMI"
+      ]
+    },
+    "C:\\Users\\PRINCEWILL\\bingme\\contracts\\SomniaExchangeRouter02.sol": {
+      "lastModificationDate": 1763683426988,
+      "contentHash": "3cd70242b1d0d96667a124d1857a6233",
+      "sourceName": "contracts/SomniaExchangeRouter02.sol",
+      "solcConfig": {
+        "version": "0.6.6",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./core/interfaces/ISomniaExchangeFactory.sol",
+        "./libraries/TransferHelper.sol",
+        "./interfaces/ISomniaExchangeRouter02.sol",
+        "./libraries/SomniaExchangeLibrary.sol",
+        "./libraries/SafeMath06.sol",
+        "./interfaces/IERC20.sol",
+        "./interfaces/IWETH.sol"
+      ],
+      "versionPragmas": [
+        "=0.6.6"
+      ],
+      "artifacts": [
+        "SomniaExchangeRouter02"
+      ]
+    },
+    "C:\\Users\\PRINCEWILL\\bingme\\contracts\\libraries\\SomniaExchangeLibrary.sol": {
+      "lastModificationDate": 1763684459404,
+      "contentHash": "48ddb93afdab1c84c90c2044447b0320",
+      "sourceName": "contracts/libraries/SomniaExchangeLibrary.sol",
+      "solcConfig": {
+        "version": "0.6.6",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../interfaces/ISomniaExchangePair.sol",
+        "./SafeMath06.sol"
+      ],
+      "versionPragmas": [
+        ">=0.6.0"
+      ],
+      "artifacts": [
+        "SomniaExchangeLibrary"
+      ]
+    },
+    "C:\\Users\\PRINCEWILL\\bingme\\contracts\\libraries\\SafeMath06.sol": {
+      "lastModificationDate": 1763679043092,
+      "contentHash": "fa9c1a3198321d430a038fec0b6f46a2",
+      "sourceName": "contracts/libraries/SafeMath06.sol",
+      "solcConfig": {
+        "version": "0.6.6",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "=0.6.6"
+      ],
+      "artifacts": [
+        "SafeMath"
+      ]
+    },
+    "C:\\Users\\PRINCEWILL\\bingme\\contracts\\SomniaExchangePair.sol": {
+      "lastModificationDate": 1763678055221,
+      "contentHash": "fb85cb7401ad249bf5c40d992ecc4f21",
+      "sourceName": "contracts/SomniaExchangePair.sol",
+      "solcConfig": {
+        "version": "0.5.16",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./interfaces/ISomniaExchangePair.sol",
+        "./SomniaExchangeERC20.sol",
+        "./libraries/Math.sol",
+        "./libraries/UQ112x112.sol",
+        "./libraries/SafeMath.sol",
+        "./interfaces/IERC20.sol",
+        "./interfaces/ISomniaExchangeFactory.sol",
+        "./interfaces/ISomniaExchangeCallee.sol"
+      ],
+      "versionPragmas": [
+        "=0.5.16"
+      ],
+      "artifacts": [
+        "SomniaExchangePair"
+      ]
+    },
+    "C:\\Users\\PRINCEWILL\\bingme\\contracts\\SomniaExchangeERC20.sol": {
+      "lastModificationDate": 1763678055655,
+      "contentHash": "6ce06fa7fa51d47f4698a4bc4e8bd789",
+      "sourceName": "contracts/SomniaExchangeERC20.sol",
+      "solcConfig": {
+        "version": "0.5.16",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./interfaces/ISomniaExchangeERC20.sol",
+        "./libraries/SafeMath.sol"
+      ],
+      "versionPragmas": [
+        "=0.5.16"
+      ],
+      "artifacts": [
+        "SomniaExchangeERC20"
+      ]
+    },
+    "C:\\Users\\PRINCEWILL\\bingme\\contracts\\libraries\\Math.sol": {
+      "lastModificationDate": 1763678055655,
+      "contentHash": "7cc5af1e246242c8f1659cfb902a11cd",
+      "sourceName": "contracts/libraries/Math.sol",
+      "solcConfig": {
+        "version": "0.5.16",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "=0.5.16"
+      ],
+      "artifacts": [
+        "Math"
+      ]
+    },
+    "C:\\Users\\PRINCEWILL\\bingme\\contracts\\libraries\\UQ112x112.sol": {
+      "lastModificationDate": 1763678055655,
+      "contentHash": "4be647a0a321a7dab863b68903f1c463",
+      "sourceName": "contracts/libraries/UQ112x112.sol",
+      "solcConfig": {
+        "version": "0.5.16",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "=0.5.16"
+      ],
+      "artifacts": [
+        "UQ112x112"
+      ]
+    },
+    "C:\\Users\\PRINCEWILL\\bingme\\contracts\\libraries\\SafeMath.sol": {
+      "lastModificationDate": 1763678055655,
+      "contentHash": "acf692d86aa69bcd2fe982bd93189262",
+      "sourceName": "contracts/libraries/SafeMath.sol",
+      "solcConfig": {
+        "version": "0.5.16",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "=0.5.16"
+      ],
+      "artifacts": [
+        "SafeMath"
+      ]
+    },
+    "C:\\Users\\PRINCEWILL\\bingme\\contracts\\SomniaExchangeFactory.sol": {
+      "lastModificationDate": 1763673225986,
+      "contentHash": "26ea1b7783f369ade1c09c5325287545",
+      "sourceName": "contracts/SomniaExchangeFactory.sol",
+      "solcConfig": {
+        "version": "0.5.16",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./interfaces/ISomniaExchangeFactory.sol",
+        "./SomniaExchangePair.sol"
+      ],
+      "versionPragmas": [
+        "=0.5.16"
+      ],
+      "artifacts": [
+        "SomniaExchangeFactory"
+      ]
+    }
+  }
+}

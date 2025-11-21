@@ -1,0 +1,14 @@
+{
+  "network": "https://dream-rpc.somnia.network",
+  "timestamp": "2025-11-21T00:22:17.115Z",
+  "pools": [
+    {
+      "pair": "WSOMI/DREW",
+      "address": "0xb4Acef00C6E922c869430847E609161486437eB0"
+    },
+    {
+      "pair": "WSOMI/CEEJHAY",
+      "address": "0x718a0E47509A5D61cDaA18190E89369B58992e5d"
+    }
+  ]
+}
