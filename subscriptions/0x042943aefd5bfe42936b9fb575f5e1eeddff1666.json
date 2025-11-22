@@ -1,0 +1,32 @@
+{
+  "walletAddress": "0x042943aefD5BFE42936b9fB575f5E1eeddFF1666",
+  "chatId": "5892360116",
+  "tokens": {
+    "DREW": {
+      "address": "0x92ef9494FABC919392F22561d28BC216A1fACE74",
+      "symbol": "DREW",
+      "balance": "698131.4",
+      "baselineUsdPrice": 0.06694640668327222,
+      "baselineUsdValue": 46737.38862276219,
+      "thresholdUp": 2.5,
+      "thresholdDown": 3,
+      "poolAddress": "0xb4Acef00C6E922c869430847E609161486437eB0"
+    },
+    "CEEJHAY": {
+      "address": "0xf12Ce9E09071D0506a114bf29D4A8088174a812B",
+      "symbol": "CEEJHAY",
+      "balance": "742084.05",
+      "baselineUsdPrice": 0.14209628661301524,
+      "baselineUsdValue": 105447.38785974713,
+      "thresholdUp": 2.5,
+      "thresholdDown": 3,
+      "poolAddress": "0x718a0E47509A5D61cDaA18190E89369B58992e5d"
+    }
+  },
+  "subscribedPools": [
+    "0xb4Acef00C6E922c869430847E609161486437eB0",
+    "0x718a0E47509A5D61cDaA18190E89369B58992e5d"
+  ],
+  "createdAt": "2025-11-22T00:24:10.035Z",
+  "updatedAt": "2025-11-22T00:37:18.758Z"
+}

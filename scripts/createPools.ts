@@ -71,35 +71,127 @@ async function approveToken(
   console.log(`   ✅ Approved`);
 }
 
+async function checkPairExists(
+  factory: ethers.Contract,
+  provider: ethers.Provider,
+  tokenA: TokenInfo,
+  tokenB: TokenInfo
+): Promise<{ 
+  exists: boolean; 
+  pairAddress: string; 
+  reserves?: { reserve0: bigint; reserve1: bigint };
+  token0?: string;
+  token1?: string;
+}> {
+  let pairAddress = await factory.getPair(tokenA.address, tokenB.address);
+  if (pairAddress === ethers.ZeroAddress) {
+    pairAddress = await factory.getPair(tokenB.address, tokenA.address);
+  }
+
+  if (pairAddress === ethers.ZeroAddress) {
+    return { exists: false, pairAddress: ethers.ZeroAddress };
+  }
+
+  // Get current reserves and token order if pair exists
+  try {
+    const pairContract = new ethers.Contract(pairAddress, PAIR_ABI, provider);
+    const [reserves, token0, token1] = await Promise.all([
+      pairContract.getReserves(),
+      pairContract.token0(),
+      pairContract.token1(),
+    ]);
+    return {
+      exists: true,
+      pairAddress,
+      reserves: {
+        reserve0: reserves[0],
+        reserve1: reserves[1],
+      },
+      token0,
+      token1,
+    };
+  } catch {
+    return { exists: true, pairAddress };
+  }
+}
+
 async function addLiquidity(
   router: ethers.Contract,
   wallet: ethers.Wallet,
+  factory: ethers.Contract,
+  provider: ethers.Provider,
   tokenA: TokenInfo,
   tokenB: TokenInfo,
-  amountA: bigint,
-  amountB: bigint
+  wsomiAmount: bigint,
+  poolInfo?: { reserves: { reserve0: bigint; reserve1: bigint }; token0: string; token1: string; pairAddress: string }
 ): Promise<{ pairAddress: string; liquidity: bigint }> {
-  console.log(`\n💧 Adding liquidity: ${tokenA.symbol}/${tokenB.symbol}`);
-  console.log(`   ${tokenA.symbol}: ${ethers.formatEther(amountA)}`);
-  console.log(`   ${tokenB.symbol}: ${ethers.formatEther(amountB)}`);
+  let finalAmountA = wsomiAmount;
+  let finalAmountB: bigint;
+
+  // If pool exists, calculate tokenB amount based on pool ratio
+  if (poolInfo) {
+    console.log(`\n💧 Adding liquidity to existing pool: ${tokenA.symbol}/${tokenB.symbol}`);
+    
+    // Determine which token is token0 and which is token1
+    const isTokenAToken0 = tokenA.address.toLowerCase() === poolInfo.token0.toLowerCase();
+    const reserveA = isTokenAToken0 ? poolInfo.reserves.reserve0 : poolInfo.reserves.reserve1;
+    const reserveB = isTokenAToken0 ? poolInfo.reserves.reserve1 : poolInfo.reserves.reserve0;
+
+    // Calculate the ratio: reserveA / reserveB
+    // We need: amountA / amountB = reserveA / reserveB
+    // So: amountB = amountA * reserveB / reserveA
+    
+    // Calculate required amount of tokenB based on WSOMI amount and pool ratio
+    const ratio = (reserveB * 1000000n) / reserveA; // Use high precision
+    finalAmountB = (wsomiAmount * ratio) / 1000000n;
+    
+    console.log(`   📊 Calculating ${tokenB.symbol} amount from pool ratio:`);
+    console.log(`   Pool ratio: ${ethers.formatEther(reserveA)} ${tokenA.symbol} : ${ethers.formatEther(reserveB)} ${tokenB.symbol}`);
+  } else {
+    // For new pools, use 1:1 ratio
+    console.log(`\n💧 Creating new pool and adding liquidity: ${tokenA.symbol}/${tokenB.symbol}`);
+    finalAmountB = wsomiAmount; // 1:1 ratio for new pools
+  }
+
+  console.log(`   ${tokenA.symbol}: ${ethers.formatEther(finalAmountA)}`);
+  console.log(`   ${tokenB.symbol}: ${ethers.formatEther(finalAmountB)}`);
+
+  // Check balances
+  const tokenAContract = new ethers.Contract(tokenA.address, ERC20_ABI, provider);
+  const tokenBContract = new ethers.Contract(tokenB.address, ERC20_ABI, provider);
+  const [balanceA, balanceB] = await Promise.all([
+    tokenAContract.balanceOf(wallet.address),
+    tokenBContract.balanceOf(wallet.address),
+  ]);
+
+  if (balanceA < finalAmountA) {
+    throw new Error(
+      `Insufficient ${tokenA.symbol} balance. Need ${ethers.formatEther(finalAmountA)}, have ${ethers.formatEther(balanceA)}`
+    );
+  }
+  if (balanceB < finalAmountB) {
+    throw new Error(
+      `Insufficient ${tokenB.symbol} balance. Need ${ethers.formatEther(finalAmountB)}, have ${ethers.formatEther(balanceB)}`
+    );
+  }
 
   // Set deadline (1 hour from now)
   const deadline = Math.floor(Date.now() / 1000) + 3600;
 
   // Approve tokens
-  await approveToken(wallet, tokenA.address, ROUTER_ADDRESS, amountA);
-  await approveToken(wallet, tokenB.address, ROUTER_ADDRESS, amountB);
+  await approveToken(wallet, tokenA.address, ROUTER_ADDRESS, finalAmountA);
+  await approveToken(wallet, tokenB.address, ROUTER_ADDRESS, finalAmountB);
 
   // Add liquidity (allow 1% slippage)
-  const amountAMin = (amountA * 99n) / 100n;
-  const amountBMin = (amountB * 99n) / 100n;
+  const amountAMin = (finalAmountA * 99n) / 100n;
+  const amountBMin = (finalAmountB * 99n) / 100n;
 
   console.log(`   Calling addLiquidity...`);
   const tx = await router.addLiquidity(
     tokenA.address,
     tokenB.address,
-    amountA,
-    amountB,
+    finalAmountA,
+    finalAmountB,
     amountAMin,
     amountBMin,
     wallet.address,
@@ -111,11 +203,10 @@ async function addLiquidity(
   const receipt = await tx.wait();
   console.log(`   ✅ Liquidity added!`);
 
-  // Wait a bit for the pair to be created
+  // Wait a bit for the pair to be created (if new)
   await new Promise(resolve => setTimeout(resolve, 2000));
 
   // Get pair address from factory
-  const factory = new ethers.Contract(FACTORY_ADDRESS, FACTORY_ABI, wallet.provider);
   let pairAddress = await factory.getPair(tokenA.address, tokenB.address);
   if (pairAddress === ethers.ZeroAddress) {
     pairAddress = await factory.getPair(tokenB.address, tokenA.address);
@@ -141,8 +232,8 @@ async function addLiquidity(
   }
 
   return {
-    pairAddress: pairAddress || '0x0000000000000000000000000000000000000000',
-    liquidity: amountA + amountB, // Approximate
+    pairAddress: pairAddress || poolInfo?.pairAddress || '0x0000000000000000000000000000000000000000',
+    liquidity: finalAmountA + finalAmountB, // Approximate
   };
 }
 
@@ -168,8 +259,9 @@ async function main() {
   const provider = new ethers.JsonRpcProvider(RPC_URL);
   const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
   const router = new ethers.Contract(ROUTER_ADDRESS, ROUTER_ABI, wallet);
+  const factory = new ethers.Contract(FACTORY_ADDRESS, FACTORY_ABI, wallet);
 
-  console.log('🚀 Creating Liquidity Pools\n');
+  console.log('🚀 Managing Liquidity Pools\n');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log(`Network: ${RPC_URL}`);
   console.log(`Wallet: ${wallet.address}`);
@@ -218,36 +310,77 @@ async function main() {
   console.log(`   DREW: ${ethers.formatEther(drewBalance)}`);
   console.log(`   CEEJHAY: ${ethers.formatEther(ceejhayBalance)}\n`);
 
-  // Amounts: 50k WSOMI and equivalent of other tokens (1:1 ratio)
-  const wsomiAmount = ethers.parseEther('50000'); // 50k WSOMI
-  const otherTokenAmount = ethers.parseEther('50000'); // 50k of other token (1:1 ratio)
+  // Amount: Only specify WSOMI amount (other token amount will be calculated from pool ratio)
+  const wsomiAmount = ethers.parseEther('50000'); // 50k WSOMI per pool
 
-  // Check if we have enough balance
+  // Check if we have enough WSOMI balance (need for both pools)
   if (wsomiBalance < wsomiAmount * 2n) {
     throw new Error(`Insufficient WSOMI balance. Need ${ethers.formatEther(wsomiAmount * 2n)}, have ${ethers.formatEther(wsomiBalance)}`);
-  }
-  if (drewBalance < otherTokenAmount) {
-    throw new Error(`Insufficient DREW balance. Need ${ethers.formatEther(otherTokenAmount)}, have ${ethers.formatEther(drewBalance)}`);
-  }
-  if (ceejhayBalance < otherTokenAmount) {
-    throw new Error(`Insufficient CEEJHAY balance. Need ${ethers.formatEther(otherTokenAmount)}, have ${ethers.formatEther(ceejhayBalance)}`);
   }
 
   const pools: Array<{ pair: string; address: string }> = [];
 
-  // Create WSOMI/DREW pool
+  // Check and handle WSOMI/DREW pool
   console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  console.log('📊 Creating WSOMI/DREW Pool');
+  console.log('📊 Checking WSOMI/DREW Pool');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  const pool1 = await addLiquidity(router, wallet, wsomi, drew, wsomiAmount, otherTokenAmount);
+  const pool1Check = await checkPairExists(factory, provider, wsomi, drew);
+  
+  if (pool1Check.exists) {
+    console.log(`   ✅ Pool already exists at: ${pool1Check.pairAddress}`);
+    if (pool1Check.reserves) {
+      console.log(`   Current reserves:`);
+      console.log(`     Reserve0: ${ethers.formatEther(pool1Check.reserves.reserve0)}`);
+      console.log(`     Reserve1: ${ethers.formatEther(pool1Check.reserves.reserve1)}`);
+    }
+  } else {
+    console.log(`   ℹ️  Pool does not exist, will be created`);
+  }
+
+  const pool1 = await addLiquidity(
+    router, 
+    wallet, 
+    factory, 
+    provider,
+    wsomi, 
+    drew, 
+    wsomiAmount, 
+    pool1Check.exists && pool1Check.reserves && pool1Check.token0 && pool1Check.token1
+      ? { reserves: pool1Check.reserves, token0: pool1Check.token0, token1: pool1Check.token1, pairAddress: pool1Check.pairAddress }
+      : undefined
+  );
   pools.push({ pair: 'WSOMI/DREW', address: pool1.pairAddress });
   console.log(`   Pair Address: ${pool1.pairAddress}`);
 
-  // Create WSOMI/CEEJHAY pool
+  // Check and handle WSOMI/CEEJHAY pool
   console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  console.log('📊 Creating WSOMI/CEEJHAY Pool');
+  console.log('📊 Checking WSOMI/CEEJHAY Pool');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  const pool2 = await addLiquidity(router, wallet, wsomi, ceejhay, wsomiAmount, otherTokenAmount);
+  const pool2Check = await checkPairExists(factory, provider, wsomi, ceejhay);
+  
+  if (pool2Check.exists) {
+    console.log(`   ✅ Pool already exists at: ${pool2Check.pairAddress}`);
+    if (pool2Check.reserves) {
+      console.log(`   Current reserves:`);
+      console.log(`     Reserve0: ${ethers.formatEther(pool2Check.reserves.reserve0)}`);
+      console.log(`     Reserve1: ${ethers.formatEther(pool2Check.reserves.reserve1)}`);
+    }
+  } else {
+    console.log(`   ℹ️  Pool does not exist, will be created`);
+  }
+
+  const pool2 = await addLiquidity(
+    router, 
+    wallet, 
+    factory, 
+    provider,
+    wsomi, 
+    ceejhay, 
+    wsomiAmount, 
+    pool2Check.exists && pool2Check.reserves && pool2Check.token0 && pool2Check.token1
+      ? { reserves: pool2Check.reserves, token0: pool2Check.token0, token1: pool2Check.token1, pairAddress: pool2Check.pairAddress }
+      : undefined
+  );
   pools.push({ pair: 'WSOMI/CEEJHAY', address: pool2.pairAddress });
   console.log(`   Pair Address: ${pool2.pairAddress}`);
 
@@ -262,7 +395,7 @@ async function main() {
   fs.writeFileSync(poolsPath, JSON.stringify(poolsInfo, null, 2));
 
   console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  console.log('✅ POOLS CREATED SUCCESSFULLY');
+  console.log('✅ LIQUIDITY OPERATION COMPLETED SUCCESSFULLY');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   pools.forEach((pool) => {
     console.log(`${pool.pair}: ${pool.address}`);

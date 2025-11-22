@@ -261,6 +261,8 @@ async function getPairAndPrice() {
       console.log(`   ${wsomiSymbol} Reserve: $${wsomiReserveUsd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
       console.log(`   ${tokenSymbol} Reserve: $${tokenReserveUsd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
       console.log(`   Total Liquidity: $${totalLiquidityUsd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+      console.log(`   💡 Note: Both reserves have equal USD value because price = reserve ratio`);
+      console.log(`   💡 Price DOES fluctuate - it changes with every swap as reserves change`);
       
       console.log(`\n📊 Price Summary:`);
       console.log(`   ${wsomiSymbol}/USD: $${wsomiUsdPrice.toFixed(6)}`);
