@@ -1,0 +1,18 @@
+{
+  "name": "Bingme Portfolio",
+  "short_name": "Bingme",
+  "description": "Somnia Testnet Portfolio Tracker with Price Alerts",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#22d3ee",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}
+

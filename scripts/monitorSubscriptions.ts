@@ -4,7 +4,6 @@ import { ethers } from 'ethers';
 import * as fs from 'fs';
 import * as path from 'path';
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
-require('dotenv').config({ path: path.join(__dirname, '../.env.local') });
 
 const RPC_URL = process.env.RPC_URL || 'https://dream-rpc.somnia.network';
 const BOT_TOKEN = process.env.BOT_TOKEN;
@@ -289,11 +288,21 @@ async function monitorSubscriptions() {
 
   console.log(`📊 Loaded ${subscriptions.size} subscription(s)\n`);
 
-  // Get all unique pool addresses
+  // Get all unique pool addresses from tokens with alerts enabled
   const poolAddresses = new Set<string>();
   for (const subscription of subscriptions.values()) {
-    for (const poolAddress of subscription.subscribedPools) {
-      poolAddresses.add(poolAddress);
+    // Check if subscribedPools exists (legacy format)
+    if (subscription.subscribedPools && Array.isArray(subscription.subscribedPools)) {
+      for (const poolAddress of subscription.subscribedPools) {
+        poolAddresses.add(poolAddress);
+      }
+    } else {
+      // New format: get pools from tokens with alerts enabled
+      for (const token of Object.values(subscription.tokens || {})) {
+        if (token.alertEnabled && token.poolAddress) {
+          poolAddresses.add(token.poolAddress);
+        }
+      }
     }
   }
 

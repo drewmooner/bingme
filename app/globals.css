@@ -1,26 +1,54 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    background-color: #0f172a;
+    color: #f1f5f9;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* RainbowKit Custom Styling */
+[data-rk] {
+  --rk-radii-connectButton: 6px;
+  --rk-radii-actionButton: 6px;
 }
+
+[data-rk] button[data-testid="rk-connect-button"] {
+  background-color: #22d3ee !important;
+  color: #0f172a !important;
+  border: 1px solid #67e8f9 !important;
+  border-radius: 6px !important;
+  padding: 10px 20px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  transition: all 0.2s !important;
+}
+
+[data-rk] button[data-testid="rk-connect-button"]:hover {
+  background-color: #67e8f9 !important;
+}
+
+/* Hide account details in connect button when connected */
+[data-rk] button[data-testid="rk-connect-button"] > div {
+  display: flex !important;
+  align-items: center !important;
+}
+
+[data-rk] button[data-testid="rk-connect-button"] > div > div:first-child {
+  display: none !important;
+}
+
+[data-rk] button[data-testid="rk-connect-button"] > div > div:last-child {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+

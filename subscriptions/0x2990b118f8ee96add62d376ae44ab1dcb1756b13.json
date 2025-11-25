@@ -1,0 +1,64 @@
+{
+  "walletAddress": "0x2990b118f8ee96add62d376ae44ab1dcb1756b13",
+  "notificationPermission": "granted",
+  "tokens": {
+    "0x66515cf8cbc44dce6951ff3b071d97100b4aa0ea": {
+      "address": "0x66515cF8cbC44dcE6951FF3b071d97100b4AA0EA",
+      "symbol": "NEBULA",
+      "alertEnabled": true,
+      "poolAddress": "0x1A0984bAc2c45Bb7756F8216b88816e481E28f13",
+      "thresholdUp": 2,
+      "thresholdDown": 2,
+      "baselineUsdPrice": 0.701716776116041,
+      "baselineUsdValue": 140343.3552232082,
+      "balance": "200000.0"
+    },
+    "0x763799cbb6604e3c2800bfa10668ab6131861da1": {
+      "address": "0x763799Cbb6604e3c2800BFa10668AB6131861da1",
+      "symbol": "COSMIC",
+      "alertEnabled": true,
+      "poolAddress": "0x66f940d6C5F7Da8E82e3338843E3388FBbbECC0C",
+      "thresholdUp": 2,
+      "thresholdDown": 2,
+      "baselineUsdPrice": 0.31509536461021376,
+      "baselineUsdValue": 63019.07292204275,
+      "balance": "200000.0"
+    },
+    "0x7758b0f169fe621188497f63043d07a019e82284": {
+      "address": "0x7758b0F169fE621188497F63043D07A019E82284",
+      "symbol": "STELLAR",
+      "alertEnabled": true,
+      "poolAddress": "0x6e803CfE8dcF5fb34d290050be61a57F6fBB7C77",
+      "thresholdUp": 2,
+      "thresholdDown": 2,
+      "baselineUsdPrice": 0.03852970426501049,
+      "baselineUsdValue": 7705.940853002098,
+      "balance": "200000.0"
+    },
+    "0xa1688830f689a546d04dde359a17865b9350a994": {
+      "address": "0xa1688830F689a546d04dde359a17865b9350a994",
+      "symbol": "VORTEX",
+      "alertEnabled": true,
+      "poolAddress": "0x4A9DEd37235CDcB550Df5B4adf0F166E4B5e0EFF",
+      "thresholdUp": 2,
+      "thresholdDown": 2,
+      "baselineUsdPrice": 0.10728502425682325,
+      "baselineUsdValue": 21457.00485136465,
+      "balance": "200000.0"
+    },
+    "0x0949098be75baa8e75e11620e08e3cd15a6a0fd6": {
+      "address": "0x0949098Be75baA8E75e11620e08E3Cd15A6a0FD6",
+      "symbol": "QUANTUM",
+      "alertEnabled": true,
+      "poolAddress": "0x924f9Dd9D9932459dC6413058589f4AC71cf7cB6",
+      "thresholdUp": 2,
+      "thresholdDown": 2,
+      "baselineUsdPrice": 0.46320930714117936,
+      "baselineUsdValue": 92641.86142823588,
+      "balance": "200000.0"
+    }
+  },
+  "createdAt": "2025-11-25T00:08:23.124Z",
+  "updatedAt": "2025-11-25T23:51:46.255Z",
+  "chatId": "6457128010"
+}
