@@ -41,7 +41,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 bg-slate-800 border-r border-slate-700 fixed left-0 top-16 bottom-0 overflow-y-auto z-40">
+    <aside className="w-64 bg-slate-50 dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 fixed left-0 top-16 bottom-0 overflow-y-auto z-40 transition-colors">
       <nav className="p-6">
         <ul className="space-y-3">
           {navLinks.map((link) => {
@@ -52,8 +52,8 @@ export default function Sidebar() {
                   href={link.href}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
                     isActive
-                      ? 'text-cyan-400 bg-slate-700'
-                      : 'text-slate-300 hover:text-cyan-400 hover:bg-slate-700/50'
+                      ? 'text-cyan-500 dark:text-cyan-400 bg-slate-200 dark:bg-slate-700'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-cyan-500 dark:hover:text-cyan-400 hover:bg-slate-100 dark:hover:bg-slate-700/50'
                   }`}
                 >
                   {link.icon}

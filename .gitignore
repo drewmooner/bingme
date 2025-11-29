@@ -42,3 +42,4 @@ next-env.d.ts
 
 # notifications
 /notifications
+/limit-orders.json

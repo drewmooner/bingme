@@ -4,6 +4,7 @@ import { RainbowKitProvider, getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import { defineChain } from 'viem';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 import '@rainbow-me/rainbowkit/styles.css';
 
 const somniaTestnet = defineChain({
@@ -64,11 +65,13 @@ if (typeof window !== 'undefined') {
     const isWalletConnectRequest = url.includes('reown.com') || 
                                    url.includes('walletconnect.com') || 
                                    url.includes('relay.walletconnect.com') ||
-                                   url.includes('relay.walletconnect.org');
+                                   url.includes('relay.walletconnect.org') ||
+                                   url.includes('walletconnect.org');
     
     if (isWalletConnectRequest) {
       try {
-        return await originalFetch(...args);
+        const response = await originalFetch(...args);
+        return response;
       } catch (error: any) {
         // Silently suppress WalletConnect/Reown cloud errors
         // Return a mock failed response to prevent console errors
@@ -81,30 +84,51 @@ if (typeof window !== 'undefined') {
     }
     
     // For non-WalletConnect requests, use original fetch
+    // Errors will be caught by console.error override
     return originalFetch(...args);
   };
   
   // Suppress console errors for WalletConnect, timeout, and fetch errors
   const originalConsoleError = console.error;
   console.error = (...args: any[]) => {
+    // Convert all args to strings for checking
+    const allArgsString = args.map(arg => {
+      if (typeof arg === 'string') return arg;
+      if (arg?.message) return arg.message;
+      if (arg?.toString) return arg.toString();
+      return String(arg);
+    }).join(' ').toLowerCase();
+    
     const message = args[0]?.toString() || '';
     const errorMessage = args[0]?.message || '';
+    const fullMessage = args.join(' ') || '';
+    const stackTrace = args[0]?.stack || '';
     
-    // Suppress WalletConnect, timeout, and fetch errors
-    if (message.includes('reown.com') || 
+    // Suppress WalletConnect, timeout, fetch, and block range errors
+    // Check all possible variations of "Failed to fetch"
+    if (allArgsString.includes('failed to fetch') ||
+        message.includes('reown.com') || 
         message.includes('walletconnect.com') ||
-        message.includes('Failed to fetch') ||
+        message.includes('walletconnect.org') ||
+        fullMessage.includes('Failed to fetch') ||
+        fullMessage.includes('failed to fetch') ||
+        stackTrace.includes('providers.tsx') ||
         message.includes('SuppressedWalletConnectError') ||
+        message.includes('Network request failed (suppressed)') ||
         message.includes('timeout') ||
         message.includes('TIMEOUT') ||
         errorMessage.includes('timeout') ||
-        errorMessage.includes('TIMEOUT')) {
+        errorMessage.includes('TIMEOUT') ||
+        message.includes('block range exceeds') ||
+        fullMessage.includes('block range exceeds') ||
+        message.includes('could not coalesce error') ||
+        fullMessage.includes('could not coalesce error')) {
       return; // Suppress these errors
     }
     originalConsoleError.apply(console, args);
   };
   
-  // Suppress unhandled promise rejections for WalletConnect and timeouts
+  // Suppress unhandled promise rejections for WalletConnect, timeouts, and block range errors
   window.addEventListener('unhandledrejection', (event) => {
     const reason = event.reason;
     const message = reason?.message || reason?.toString() || '';
@@ -114,6 +138,8 @@ if (typeof window !== 'undefined') {
         message.includes('Failed to fetch') ||
         message.includes('timeout') ||
         message.includes('TIMEOUT') ||
+        message.includes('block range exceeds') ||
+        message.includes('could not coalesce error') ||
         reason?.name === 'SuppressedWalletConnectError') {
       event.preventDefault(); // Suppress these errors
     }
@@ -131,6 +157,7 @@ const queryClient = new QueryClient({
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
+    <ThemeProvider>
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider>
@@ -138,6 +165,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
+    </ThemeProvider>
   );
 }
 

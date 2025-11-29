@@ -7,6 +7,8 @@ const RPC_URL = process.env.RPC_URL || 'https://dream-rpc.somnia.network';
 const FACTORY_ADDRESS = '0xBABE473c0986bf6A986307Bcf52EAe1C96f921B2';
 const WSOMI_ADDRESS = '0xb8DabbA9EAa4957Dce08e31Ad729F89C1F7C88b4';
 const API_URL = process.env.API_URL || 'http://localhost:3000';
+const BOT_TOKEN = process.env.BOT_TOKEN;
+const TELEGRAM_API = 'https://api.telegram.org/bot';
 
 const SWAP_EVENT_TOPIC = '0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822';
 
@@ -154,30 +156,6 @@ function saveSubscription(subscription: UserSubscription): void {
       fs.unlinkSync(tempFile);
     }
     throw error;
-  }
-}
-
-async function sendTelegramMessage(chatId: string, message: string): Promise<void> {
-  if (!BOT_TOKEN) return;
-  
-  try {
-    const url = `${TELEGRAM_API}${BOT_TOKEN}/sendMessage`;
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: message,
-        parse_mode: 'HTML',
-      }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      console.error(`   ⚠️  Telegram error: ${error.description || 'Unknown error'}`);
-    }
-  } catch (error: any) {
-    console.error(`   ⚠️  Failed to send Telegram message: ${error.message}`);
   }
 }
 

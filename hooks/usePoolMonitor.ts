@@ -124,57 +124,74 @@ export function usePoolMonitor({ poolAddresses, onSwap }: PoolMonitorOptions) {
             }
 
             if (toBlock > fromBlock) {
-              const swapFilter = {
-                address: poolAddress,
-                topics: [SWAP_EVENT_TOPIC],
-                fromBlock: fromBlock + 1,
-                toBlock: toBlock,
-              };
-
-              try {
-                const logs = await providerRef.current.getLogs(swapFilter);
+              const blockRange = toBlock - fromBlock;
+              const MAX_BLOCK_RANGE = 1000;
+              
+              // Always query in chunks if range exceeds limit
+              if (blockRange > MAX_BLOCK_RANGE) {
+                const chunkSize = MAX_BLOCK_RANGE;
+                let foundSwaps = false;
                 
-                if (logs.length > 0) {
-                  if (onSwap) {
-                    onSwap(poolAddress);
-                  }
-                  
-                  await checkPoolForNotifications(poolAddress);
-                }
-              } catch (error: any) {
-                if (error.message?.includes('query returned more than')) {
-                  // Query in smaller chunks
-                  const chunkSize = 1000;
-                  for (let start = fromBlock + 1; start <= toBlock; start += chunkSize) {
-                    const end = Math.min(start + chunkSize - 1, toBlock);
-                    try {
-                      const logs = await providerRef.current.getLogs({
-                        address: poolAddress,
-                        topics: [SWAP_EVENT_TOPIC],
-                        fromBlock: start,
-                        toBlock: end,
-                      });
-                      
-                      if (logs.length > 0) {
-                        if (onSwap) {
-                          onSwap(poolAddress);
-                        }
-                        
-                        await checkPoolForNotifications(poolAddress);
-                      }
-                    } catch (chunkError: any) {
-                      // Suppress timeout and common RPC errors
-                      if (!chunkError?.message?.includes('timeout') && 
-                          !chunkError?.message?.includes('TIMEOUT') &&
-                          !chunkError?.code?.includes('TIMEOUT')) {
-                        console.error(`Error querying blocks ${start}-${end}:`, chunkError);
+                for (let start = fromBlock + 1; start <= toBlock; start += chunkSize) {
+                  const end = Math.min(start + chunkSize - 1, toBlock);
+                  try {
+                    const logs = await providerRef.current.getLogs({
+                      address: poolAddress,
+                      topics: [SWAP_EVENT_TOPIC],
+                      fromBlock: start,
+                      toBlock: end,
+                    });
+                    
+                    if (logs.length > 0) {
+                      foundSwaps = true;
+                      if (onSwap) {
+                        onSwap(poolAddress);
                       }
                     }
+                  } catch (chunkError: any) {
+                    // Suppress "block range exceeds" and timeout errors
+                    const errorMsg = chunkError?.message || '';
+                    const errorCode = chunkError?.code || '';
+                    if (!errorMsg.includes('block range exceeds') &&
+                        !errorMsg.includes('timeout') &&
+                        !errorMsg.includes('TIMEOUT') &&
+                        !errorCode.includes('TIMEOUT')) {
+                      // Only log non-expected errors
+                      console.warn(`Error querying blocks ${start}-${end}:`, chunkError);
+                    }
                   }
-                } else if (!error?.message?.includes('timeout') && 
-                          !error?.message?.includes('TIMEOUT') &&
-                          !error?.code?.includes('TIMEOUT')) {
-                  console.error(`Error getting logs for ${poolAddress}:`, error.message);
+                }
+                
+                if (foundSwaps) {
+                  await checkPoolForNotifications(poolAddress);
+                }
+              } else {
+                // Range is small enough, query directly
+                try {
+                  const logs = await providerRef.current.getLogs({
+                    address: poolAddress,
+                    topics: [SWAP_EVENT_TOPIC],
+                    fromBlock: fromBlock + 1,
+                    toBlock: toBlock,
+                  });
+                  
+                  if (logs.length > 0) {
+                    if (onSwap) {
+                      onSwap(poolAddress);
+                    }
+                    
+                    await checkPoolForNotifications(poolAddress);
+                  }
+                } catch (error: any) {
+                  // Suppress "block range exceeds" and timeout errors
+                  const errorMsg = error?.message || '';
+                  const errorCode = error?.code || '';
+                  if (!errorMsg.includes('block range exceeds') &&
+                      !errorMsg.includes('timeout') &&
+                      !errorMsg.includes('TIMEOUT') &&
+                      !errorCode.includes('TIMEOUT')) {
+                    console.warn(`Error getting logs for ${poolAddress}:`, errorMsg);
+                  }
                 }
               }
 

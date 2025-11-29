@@ -20,7 +20,10 @@
     "subscribe-user": "tsx scripts/subscribeUser.ts",
     "monitor": "tsx scripts/monitorSubscriptions.ts",
     "monitor-browser": "tsx scripts/monitorBrowserNotifications.ts",
-    "telegram-bot": "tsx scripts/telegramBot.ts"
+    "telegram-bot": "tsx scripts/telegramBot.ts",
+    "deploy-limit-order": "tsx scripts/deployLimitOrderManager.ts",
+    "monitor-limit-orders": "tsx scripts/monitorLimitOrders.ts",
+    "check-order-approval": "tsx scripts/checkOrderApproval.ts"
   },
   "dependencies": {
     "@rainbow-me/rainbowkit": "^2.2.9",

@@ -1,0 +1,10 @@
+{
+  "network": "https://dream-rpc.somnia.network",
+  "deployer": "0x042943aefD5BFE42936b9fB575f5E1eeddFF1666",
+  "timestamp": "2025-11-29T00:06:12.909Z",
+  "contractAddress": "0xbC3cD7975CE5D13bdB9752FDc6CeBAa3ed52bEE7",
+  "router": "0x87F31cC7cd09532Ac352C620A5e3c9FC5BDC9e5D",
+  "wsomi": "0xb8DabbA9EAa4957Dce08e31Ad729F89C1F7C88b4",
+  "feeRecipient": "0x042943aefD5BFE42936b9fB575f5E1eeddFF1666",
+  "feeBps": 100
+}

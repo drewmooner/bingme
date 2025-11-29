@@ -167,7 +167,7 @@ export async function GET(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { walletAddress, tokenAddress, alertEnabled, tokenData } = body;
+    const { walletAddress, tokenAddress, alertEnabled, tokenData, thresholdUp, thresholdDown } = body;
 
     if (!walletAddress || !tokenAddress) {
       return NextResponse.json(
@@ -206,12 +206,20 @@ export async function PUT(request: NextRequest) {
     }
 
     // Default thresholds
-    const defaultThresholdUp = 2.0;
-    const defaultThresholdDown = 2.0;
+    const defaultThresholdUp = thresholdUp !== undefined ? Number(thresholdUp) : 2.0;
+    const defaultThresholdDown = thresholdDown !== undefined ? Number(thresholdDown) : 2.0;
 
     if (subscription.tokens[normalizedTokenAddress]) {
       const token = subscription.tokens[normalizedTokenAddress];
       token.alertEnabled = alertEnabled;
+      
+      // Update thresholds if provided
+      if (thresholdUp !== undefined) {
+        token.thresholdUp = Math.max(1, Math.min(100, Number(thresholdUp)));
+      }
+      if (thresholdDown !== undefined) {
+        token.thresholdDown = Math.max(1, Math.min(100, Number(thresholdDown)));
+      }
       
       // If enabling alert and no baseline exists, set it now
       if (alertEnabled && (!token.baselineUsdPrice || token.baselineUsdPrice === 0)) {
@@ -275,8 +283,8 @@ export async function PUT(request: NextRequest) {
         symbol: tokenData.symbol,
         alertEnabled: alertEnabled,
         poolAddress: poolAddress,
-        thresholdUp: defaultThresholdUp,
-        thresholdDown: defaultThresholdDown,
+        thresholdUp: thresholdUp !== undefined ? Math.max(1, Math.min(100, Number(thresholdUp))) : defaultThresholdUp,
+        thresholdDown: thresholdDown !== undefined ? Math.max(1, Math.min(100, Number(thresholdDown))) : defaultThresholdDown,
         baselineUsdPrice,
         baselineUsdValue,
         balance,

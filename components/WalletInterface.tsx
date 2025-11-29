@@ -7,6 +7,7 @@ import TokenRow from './TokenRow';
 import { useNotifications } from '@/hooks/useNotifications';
 import { usePoolMonitor } from '@/hooks/usePoolMonitor';
 import { useServerNotifications } from '@/hooks/useServerNotifications';
+import { useCurrency } from '@/hooks/useCurrency';
 
 interface TokenData {
   address: string;
@@ -263,12 +264,14 @@ async function getAllTokensWithLiquidity(
 export default function WalletInterface() {
   const { address, isConnected } = useAccount();
   const { requestPermission, permission, isSupported, showNotification } = useNotifications();
+  const { formatCurrency, formatPrice } = useCurrency();
   const [tokens, setTokens] = useState<TokenData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [toggledTokens, setToggledTokens] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
   const [isRegistered, setIsRegistered] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
+  const [tokenThresholds, setTokenThresholds] = useState<Record<string, { up: number; down: number }>>({});
 
   const loadTokenData = async (walletAddress: string) => {
     setIsLoading(true);
@@ -344,18 +347,26 @@ export default function WalletInterface() {
         setIsRegistered(true);
         // Load existing alert states - sync with subscription
         const alertTokens = new Set<string>();
+        const thresholds: Record<string, { up: number; down: number }> = {};
         Object.entries(data.subscription.tokens || {}).forEach(([address, token]: [string, any]) => {
           // Only add tokens that have alertEnabled: true
           if (token.alertEnabled === true) {
             // Use lowercase address to match token addresses
             alertTokens.add(address.toLowerCase());
+            // Load thresholds
+            thresholds[address.toLowerCase()] = {
+              up: token.thresholdUp || 2,
+              down: token.thresholdDown || 2,
+            };
           }
         });
         setToggledTokens(alertTokens);
+        setTokenThresholds(thresholds);
       } else {
         setIsRegistered(false);
         // Clear toggles if no subscription
         setToggledTokens(new Set());
+        setTokenThresholds({});
       }
     } catch (error) {
       console.error('Error checking subscription:', error);
@@ -421,6 +432,9 @@ export default function WalletInterface() {
     if (!token) return;
 
     try {
+      // Get current thresholds or use defaults
+      const currentThresholds = tokenThresholds[tokenAddress.toLowerCase()] || { up: 2, down: 2 };
+      
       // Update subscription via API
       const response = await fetch('/api/subscription', {
         method: 'PUT',
@@ -430,6 +444,8 @@ export default function WalletInterface() {
         body: JSON.stringify({
           walletAddress: address,
           tokenAddress: tokenAddress.toLowerCase(),
+          thresholdUp: currentThresholds.up,
+          thresholdDown: currentThresholds.down,
           alertEnabled: newToggledState,
           tokenData: {
             address: token.address,
@@ -462,6 +478,61 @@ export default function WalletInterface() {
           newSet.add(tokenAddress);
         }
         return newSet;
+      });
+    }
+  };
+
+  const handleThresholdChange = async (tokenAddress: string, thresholdUp: number, thresholdDown: number) => {
+    if (!address || !isConnected || !isRegistered) {
+      return;
+    }
+
+    // Update local state immediately
+    setTokenThresholds((prev) => ({
+      ...prev,
+      [tokenAddress.toLowerCase()]: { up: thresholdUp, down: thresholdDown },
+    }));
+
+    // Find token data
+    const token = tokens.find(t => t.address.toLowerCase() === tokenAddress.toLowerCase());
+    if (!token) return;
+
+    try {
+      // Update subscription via API
+      const response = await fetch('/api/subscription', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          walletAddress: address,
+          tokenAddress: tokenAddress.toLowerCase(),
+          thresholdUp,
+          thresholdDown,
+          alertEnabled: toggledTokens.has(tokenAddress.toLowerCase()),
+          tokenData: {
+            address: token.address,
+            symbol: token.symbol,
+            poolAddress: token.poolAddress,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        // Revert on error
+        setTokenThresholds((prev) => {
+          const updated = { ...prev };
+          delete updated[tokenAddress.toLowerCase()];
+          return updated;
+        });
+      }
+    } catch (error) {
+      console.error('Error updating thresholds:', error);
+      // Revert on error
+      setTokenThresholds((prev) => {
+        const updated = { ...prev };
+        delete updated[tokenAddress.toLowerCase()];
+        return updated;
       });
     }
   };
@@ -513,43 +584,43 @@ export default function WalletInterface() {
   return (
     <div className="space-y-6 pt-4">
       {/* Net Worth Section */}
-      <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
-        <h2 className="text-sm font-medium text-slate-400 mb-2">Net Worth</h2>
-        <p className="text-3xl font-bold text-slate-100">
-          ${totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      <div className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 transition-colors">
+        <h2 className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Net Worth</h2>
+        <p className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+          {formatCurrency(totalValue)}
         </p>
       </div>
 
       {/* Assets Section */}
-      <div className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden mt-8">
+      <div className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden mt-8 transition-colors">
         {/* Section Header */}
-        <div className="px-6 py-4 border-b border-slate-700 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-slate-100">Assets</h2>
+        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Assets</h2>
           <div className="flex items-center gap-4">
             {/* View Toggle */}
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-700 border border-slate-600 rounded-lg">
-              <span className="text-sm text-slate-300">List view</span>
-              <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-200 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg">
+              <span className="text-sm text-slate-700 dark:text-slate-300">List view</span>
+              <svg className="w-4 h-4 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </div>
             {/* Tabs */}
-            <div className="flex items-center gap-1 bg-slate-700 rounded-lg p-1">
-              <button className="px-4 py-1.5 bg-cyan-400 text-slate-900 rounded-md text-sm font-medium">
+            <div className="flex items-center gap-1 bg-slate-200 dark:bg-slate-700 rounded-lg p-1">
+              <button className="px-4 py-1.5 bg-cyan-400 dark:bg-cyan-400 text-slate-900 dark:text-slate-900 rounded-md text-sm font-medium">
                 Tokens
               </button>
-              <button className="px-4 py-1.5 text-slate-300 rounded-md text-sm font-medium hover:text-slate-100">
+              <button className="px-4 py-1.5 text-slate-700 dark:text-slate-300 rounded-md text-sm font-medium hover:text-slate-900 dark:hover:text-slate-100">
                 NFTs
               </button>
-              <button className="px-4 py-1.5 text-slate-300 rounded-md text-sm font-medium hover:text-slate-100">
+              <button className="px-4 py-1.5 text-slate-700 dark:text-slate-300 rounded-md text-sm font-medium hover:text-slate-900 dark:hover:text-slate-100">
                 Transactions
               </button>
             </div>
           </div>
         </div>
 
-        {/* Search Bar */}
-        {filteredTokens.length > 0 && (
+        {/* Search Bar - Always visible when tokens exist */}
+        {tokens.length > 0 && (
           <div className="px-6 py-4 border-b border-slate-700 bg-slate-800/50">
             <div className="relative">
               <input
@@ -591,7 +662,7 @@ export default function WalletInterface() {
         ) : (
           <div>
             {/* Table Header */}
-            <div className="px-6 py-3 bg-slate-900/30 border-b border-slate-700 grid grid-cols-12 gap-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            <div className="px-6 py-3 bg-slate-100/50 dark:bg-slate-900/30 border-b border-slate-200 dark:border-slate-700 grid grid-cols-12 gap-4 text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
               <div className="col-span-4">Token</div>
               <div className="col-span-2 text-right">Portfolio %</div>
               <div className="col-span-2 text-right">Price</div>
@@ -603,15 +674,20 @@ export default function WalletInterface() {
             <div className="divide-y divide-slate-700/30">
                 {filteredTokens.map((token) => {
                 const portfolioPercent = totalValue > 0 ? (token.usdValue / totalValue) * 100 : 0;
+                const tokenAddressLower = token.address.toLowerCase();
+                const thresholds = tokenThresholds[tokenAddressLower] || { up: 2, down: 2 };
                 
                 return (
                   <TokenRow
                     key={token.address}
                     token={token}
                     portfolioPercent={portfolioPercent}
-                    isToggled={toggledTokens.has(token.address.toLowerCase())}
-                    onToggle={() => handleToggle(token.address.toLowerCase())}
+                    isToggled={toggledTokens.has(tokenAddressLower)}
+                    onToggle={() => handleToggle(tokenAddressLower)}
                     isDisabled={!isConnected || !isRegistered}
+                    thresholdUp={thresholds.up}
+                    thresholdDown={thresholds.down}
+                    onThresholdChange={(up, down) => handleThresholdChange(tokenAddressLower, up, down)}
                   />
                 );
               })}

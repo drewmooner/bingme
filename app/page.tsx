@@ -6,7 +6,7 @@ import WalletInterface from '@/components/WalletInterface';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors">
       <Header />
       <Sidebar />
       <main className="ml-64 pt-16 px-8 py-8 min-h-screen">
